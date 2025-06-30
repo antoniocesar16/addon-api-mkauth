@@ -122,6 +122,11 @@ try {
         'data' => [
             'error' => 'Internal Server Error',
             'message' => 'Erro interno do servidor'
+        ],
+        "debug" => [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
         ]
     ], JSON_UNESCAPED_UNICODE);
 }

@@ -1,7 +1,7 @@
 <?php 
 
 // pasta: /opt/mk-auth/addon-api-mkauth/conectar.php
-require_once '/opt/mk-auth/includes/conexao.php';
+require_once '/opt/mk-auth/include/conexao.php';
 
 // definidos
 

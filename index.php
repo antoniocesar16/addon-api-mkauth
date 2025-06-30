@@ -40,6 +40,8 @@ try {
     // POST /api/v1/clientes - Criar novo cliente
     $api->addRoute('POST', '/api/v1/clientes', [$clienteController, 'criar']);
     
+    $api->addRoute('PUT', '/api/v1/titulos/([^/]+)', [$tituloController, 'atualizar']);
+
     // === ROTAS DE CHAMADOS ===
     
     // GET /api/v1/chamados/abertos - Chamados abertos
@@ -75,20 +77,8 @@ try {
     $api->addRoute('GET', 'chamadofechadodia.php', [$chamadoController, 'getChamadosFechadosDia']);
     
 
-    // titulos
-    $api->addRoute('GET', '/api/v1/titulos', function() use ($api) {
-        $api->sendResponse(200, [
-            'success' => true,
-            'status_code' => 200,
-            'timestamp' => date('Y-m-d H:i:s'),
-            'data' => [
-                'message' => 'Endpoint de títulos não implementado'
-            ]
-        ]);
-    });
 
     // === ROTA DE INFORMAÇÕES DA API ===
-    
     $api->addRoute('GET', '/api/v1/info', function() use ($api) {
         $api->sendResponse(200, [
             'api_name' => 'MK-Auth API',

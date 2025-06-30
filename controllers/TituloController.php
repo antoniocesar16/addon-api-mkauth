@@ -65,18 +65,25 @@ class TituloController {
 
     public function sis_qrpix_listar() {
         try {
-            $sql = "SELECT * FROM sis_qrpix";
-            $result = $this->db->fetchAll($sql);
+            $sql = "SELECT titulo, qrcode FROM sis_qrpix ORDER BY titulo";
+            $result = $this->db->executeQuery($sql);
+            
+            if ($result === false) {
+                throw new Exception("Falha na execução da query");
+            }
+            
             $this->api->sendResponse(200, [
-                'data' => $result
+                'success' => true,
+                'total' => count($result),
+                'qr_codes' => $result
             ]);
+            
         } catch (Exception $e) {
-            $this->api->sendResponse(200, [
+            error_log("Erro sis_qrpix_listar: " . $e->getMessage());
+            
+            $this->api->sendResponse(500, [
                 'error' => 'Database Error',
-                'message' => 'Erro ao listar QR Codes PIX',
-                'details' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'message' => 'Erro ao listar QR Codes PIX'
             ]);
         }
     }

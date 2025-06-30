@@ -45,6 +45,7 @@ try {
     $api->addRoute('GET', '/api/v1/titulos/([^/]+)', [$tituloController, 'show']);
 
     // === ROTAS DE CHAMADOS ===
+    $api->addRoute('GET', '/api/v1/qrpix_list', [$tituloController, 'sis_qrpix_listar']);
     
     // GET /api/v1/chamados/abertos - Chamados abertos
     $api->addRoute('GET', '/api/v1/chamados/abertos', [$chamadoController, 'getChamadosAbertos']);

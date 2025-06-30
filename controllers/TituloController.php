@@ -62,6 +62,21 @@ class TituloController {
             return null;
         }
     }
+
+    public function sis_qrpix_listar() {
+        try {
+            $sql = "SELECT * FROM sis_qrpix";
+            $result = $this->db->fetchAll($sql);
+            $this->api->sendResponse(200, [
+                'data' => $result
+            ]);
+        } catch (Exception $e) {
+            $this->api->sendResponse(500, [
+                'error' => 'Database Error',
+                'message' => 'Erro ao listar QR Codes PIX'
+            ]);
+        }
+    }
     
     /**
      * Adicionar dados PIX ao título

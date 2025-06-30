@@ -3,15 +3,23 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Redirecionar todas as requisições API para api.php
+    # Remover o prefixo da pasta base das URIs
+    RewriteBase /addon-api-mkauth/
+    
+    # Redirecionar rotas específicas de títulos para api.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^api/(.*)$ api.php [QSA,L]
+    RewriteRule ^api/titulos/(.*)$ api.php [QSA,L]
+    
+    # Redirecionar outras requisições API v1 para index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^api/v1/(.*)$ index.php [QSA,L]
     
     # Redirecionar outras requisições para index.php (compatibilidade)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} !^/api/
+    RewriteCond %{REQUEST_URI} !^/addon-api-mkauth/api/
     RewriteRule ^(.*)$ index.php [QSA,L]
     
     # Headers de segurança

@@ -3,7 +3,7 @@
 # Script para testar a API
 # Configure a API_KEY antes de executar
 
-API_BASE_URL="http://localhost/addon-api-mkauth"
+API_BASE_URL="http://128.201.77.95/addon-api-mkauth"
 API_KEY="seu_token_secreto_aqui"
 
 echo "=== Testando API MK-Auth ==="

@@ -21,13 +21,39 @@ class APIRouter {
     }
     
     /**
-     * Parsear URI removendo parâmetros GET
+     * Parsear URI removendo parâmetros GET e prefixo da pasta
      */
     private function parseUri() {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        return trim($uri, '/');
+        
+        // Remover o prefixo da pasta base das URIs
+        $basePath = '/addon-api-mkauth';
+        if (strpos($uri, $basePath) === 0) {
+            $uri = substr($uri, strlen($basePath));
+        }
+        
+        // Garantir que sempre comece com /
+        if (substr($uri, 0, 1) !== '/') {
+            $uri = '/' . $uri;
+        }
+        
+        // Remover / final se existir e não for a raiz
+        if (strlen($uri) > 1 && substr($uri, -1) === '/') {
+            $uri = rtrim($uri, '/');
+        }
+        
+        // Debug: log da URI processada
+        error_log("APIRouter Debug - Original URI: " . $_SERVER['REQUEST_URI'] . " | Processed URI: " . $uri);
+        
+        return $uri;
     }
     
+    /**
+     * Obter URI limpa para debug
+     */
+    public function getCleanUri() {
+        return $this->request_uri;
+    }
     
     /**
      * Obter API Key do header ou GET
@@ -46,17 +72,58 @@ class APIRouter {
         return null;
     }
     
-
     /**
      * Validar API Key
      */
     private function validateApiKey() {
-        if ($this->api_key !== API_KEY) {
+        // Pular validação para rota de info
+        if (strpos($this->request_uri, '/api/v1/info') !== false) {
+            return;
+        }
+        
+        if (empty($this->api_key)) {
             $this->sendResponse(401, [
                 'error' => 'Unauthorized',
-                'message' => 'API Key inválida ou não fornecida'
+                'message' => 'API Key é obrigatória'
             ]);
         }
+        
+        // Aqui você pode implementar validação mais robusta da API Key
+        // Por enquanto aceita qualquer key não vazia
+        if (defined('API_KEY') && $this->api_key !== API_KEY) {
+            $this->sendResponse(401, [
+                'error' => 'Unauthorized',
+                'message' => 'API Key inválida'
+            ]);
+        }
+    }
+    
+    /**
+     * Adicionar uma rota GET
+     */
+    public function get($pattern, $callback) {
+        $this->addRoute('GET', $pattern, $callback);
+    }
+    
+    /**
+     * Adicionar uma rota POST
+     */
+    public function post($pattern, $callback) {
+        $this->addRoute('POST', $pattern, $callback);
+    }
+    
+    /**
+     * Adicionar uma rota PUT
+     */
+    public function put($pattern, $callback) {
+        $this->addRoute('PUT', $pattern, $callback);
+    }
+    
+    /**
+     * Adicionar uma rota DELETE
+     */
+    public function delete($pattern, $callback) {
+        $this->addRoute('DELETE', $pattern, $callback);
     }
     
     /**
@@ -74,23 +141,32 @@ class APIRouter {
      * Processar a requisição
      */
     public function dispatch() {
-        // Validar API Key para todas as rotas
+        // Validar API Key para todas as rotas (exceto info)
         $this->validateApiKey();
+        
+        // Debug: mostrar informações da requisição
+        error_log("APIRouter Debug - Method: {$this->request_method}, URI: {$this->request_uri}");
         
         foreach ($this->routes as $route) {
             if ($route['method'] === $this->request_method) {
                 $pattern = '#^' . $route['pattern'] . '$#';
                 
+                error_log("APIRouter Debug - Checking pattern: {$route['pattern']} against URI: {$this->request_uri}");
+                
                 if (preg_match($pattern, $this->request_uri, $matches)) {
                     array_shift($matches); // Remove o match completo
+                    
+                    error_log("APIRouter Debug - Route matched! Calling callback");
                     
                     try {
                         call_user_func_array($route['callback'], $matches);
                         return;
                     } catch (Exception $e) {
+                        error_log("APIRouter Error: " . $e->getMessage());
                         $this->sendResponse(500, [
                             'error' => 'Internal Server Error',
-                            'message' => 'Erro interno do servidor'
+                            'message' => 'Erro interno do servidor',
+                            'debug' => $e->getMessage()
                         ]);
                     }
                 }
@@ -100,8 +176,24 @@ class APIRouter {
         // Rota não encontrada
         $this->sendResponse(404, [
             'error' => 'Not Found',
-            'message' => 'Endpoint não encontrado'
+            'message' => 'Endpoint não encontrado',
+            'debug' => [
+                'requested_uri' => $this->request_uri,
+                'method' => $this->request_method,
+                'available_routes' => $this->getAvailableRoutes()
+            ]
         ]);
+    }
+    
+    /**
+     * Obter rotas disponíveis para debug
+     */
+    private function getAvailableRoutes() {
+        $routes = [];
+        foreach ($this->routes as $route) {
+            $routes[] = $route['method'] . ' ' . $route['pattern'];
+        }
+        return $routes;
     }
     
     /**

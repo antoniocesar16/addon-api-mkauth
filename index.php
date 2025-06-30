@@ -40,7 +40,9 @@ try {
     // POST /api/v1/clientes - Criar novo cliente
     $api->addRoute('POST', '/api/v1/clientes', [$clienteController, 'criar']);
     
-    $api->addRoute('PUT', '/api/v1/titulos/([^/]+)', [$tituloController, 'atualizar']);
+
+    $api->addRoute('GET', '/api/v1/titulos', [$tituloController, 'index']);
+    $api->addRoute('GET', '/api/v1/titulos/([^/]+)', [$tituloController, 'show']);
 
     // === ROTAS DE CHAMADOS ===
     

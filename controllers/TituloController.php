@@ -11,6 +11,43 @@ class TituloController {
         $this->api = $api_router;
     }
     
+
+    public function index() {
+        // Redirecionar para a rota de listagem
+        $this->listar();
+    }
+
+    public function show($uuid) {
+        // Se não foi passado na URL, tenta pegar do GET
+        if ($uuid === null) {
+            $uuid = $_GET['uuid'] ?? null;
+        }
+        
+        // Validar parâmetro obrigatório
+        if (empty($uuid)) {
+            $this->api->sendResponse(400, [
+                'error' => 'Bad Request',
+                'message' => 'Parâmetro "uuid" é obrigatório'
+            ]);
+        }
+        
+        // Sanitizar UUID
+        $uuid = $this->api->sanitizeString($uuid);
+        
+        try {
+            $titulo = $this->buscarPorId($uuid);
+            $this->api->sendResponse(200, [
+                'titulo' => $titulo
+            ]);
+            
+        } catch (Exception $e) {
+            $this->api->sendResponse(500, [
+                'error' => 'Database Error',
+                'message' => 'Erro ao buscar título'
+            ]);
+        }
+    }
+
     /**
      * Método privado para buscar QR Code PIX (uso interno)
      */

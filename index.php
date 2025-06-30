@@ -27,30 +27,30 @@ try {
     // === ROTAS DE CLIENTES ===
     
     // GET /api/v1/clientes - Listar clientes com paginação
-    $api->addRoute('GET', 'api/v1/clientes', [$clienteController, 'listar']);
+    $api->addRoute('GET', '/api/v1/clientes', [$clienteController, 'listar']);
     
     // GET /api/v1/clientes/buscar - Buscar cliente por código (compatibilidade)
-    $api->addRoute('GET', 'api/v1/clientes/buscar', [$clienteController, 'buscarPorCodigo']);
+    $api->addRoute('GET', '/api/v1/clientes/buscar', [$clienteController, 'buscarPorCodigo']);
     
     // GET /api/v1/clientes/{codigo} - Buscar cliente por código (RESTful)
-    $api->addRoute('GET', 'api/v1/clientes/([^/]+)', [$clienteController, 'buscarPorCodigo']);
+    $api->addRoute('GET', '/api/v1/clientes/([^/]+)', [$clienteController, 'buscarPorCodigo']);
     
     // POST /api/v1/clientes - Criar novo cliente
-    $api->addRoute('POST', 'api/v1/clientes', [$clienteController, 'criar']);
+    $api->addRoute('POST', '/api/v1/clientes', [$clienteController, 'criar']);
     
     // === ROTAS DE CHAMADOS ===
     
     // GET /api/v1/chamados/abertos - Chamados abertos
-    $api->addRoute('GET', 'api/v1/chamados/abertos', [$chamadoController, 'getChamadosAbertos']);
+    $api->addRoute('GET', '/api/v1/chamados/abertos', [$chamadoController, 'getChamadosAbertos']);
     
     // GET /api/v1/chamados/fechados - Chamados fechados por período
-    $api->addRoute('GET', 'api/v1/chamados/fechados', [$chamadoController, 'getChamadosFechados']);
+    $api->addRoute('GET', '/api/v1/chamados/fechados', [$chamadoController, 'getChamadosFechados']);
     
     // GET /api/v1/chamados/fechados/dia - Chamados fechados no dia
-    $api->addRoute('GET', 'api/v1/chamados/fechados/dia', [$chamadoController, 'getChamadosFechadosDia']);
+    $api->addRoute('GET', '/api/v1/chamados/fechados/dia', [$chamadoController, 'getChamadosFechadosDia']);
     
     // GET /api/v1/relatorios/grupos - Relatório por grupo
-    $api->addRoute('GET', 'api/v1/relatorios/grupos', [$chamadoController, 'getRelatorioPorGrupo']);
+    $api->addRoute('GET', '/api/v1/relatorios/grupos', [$chamadoController, 'getRelatorioPorGrupo']);
     
     // === ROTAS DE COMPATIBILIDADE (para não quebrar código existente) ===
     
@@ -68,7 +68,7 @@ try {
     
     // === ROTA DE INFORMAÇÕES DA API ===
     
-    $api->addRoute('GET', 'api/v1/info', function() use ($api) {
+    $api->addRoute('GET', '/api/v1/info', function() use ($api) {
         $api->sendResponse(200, [
             'api_name' => 'MK-Auth API',
             'version' => API_VERSION,

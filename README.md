@@ -29,6 +29,8 @@ addon-api-mkauth/
 └── README.md              # Este arquivo
 ```
 
+#### obs: mova para a pasta: /var/www, ou seja, caminho completo deve ficar assim: /var/www/addon-api-mkauth <br>exemplo de requisição: https://<SEU_HOST>/addon-api-mkauth/
+
 ## 🔧 Configuração
 
 1. **Configurar API Key**:

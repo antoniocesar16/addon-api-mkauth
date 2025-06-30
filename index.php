@@ -14,6 +14,7 @@ require_once __DIR__ . '/core/Database.php';
 // Incluir controllers
 require_once __DIR__ . '/controllers/ClienteController.php';
 require_once __DIR__ . '/controllers/ChamadoController.php';
+require_once __DIR__ . '/controllers/TituloController.php';
 
 try {
     // Inicializar componentes principais
@@ -23,6 +24,7 @@ try {
     // Inicializar controllers
     $clienteController = new ClienteController($db, $api);
     $chamadoController = new ChamadoController($db, $api);
+    $tituloController = new TituloController($db, $api);
     
     // === ROTAS DE CLIENTES ===
     
@@ -51,7 +53,13 @@ try {
     
     // GET /api/v1/relatorios/grupos - Relatório por grupo
     $api->addRoute('GET', '/api/v1/relatorios/grupos', [$chamadoController, 'getRelatorioPorGrupo']);
-    
+
+    // === ROTAS DE TÍTULOS ===
+    // GET /api/v1/titulos - Listar títulos (ainda não implementado)
+    $api->addRoute('GET', '/api/v1/titulos', [$tituloController, 'index']);
+    // buscar um titulo
+    $api->addRoute('GET', '/api/v1/titulos/([^/]+)', [$tituloController, 'show']);
+
     // === ROTAS DE COMPATIBILIDADE (para não quebrar código existente) ===
     
     // GET /buscacliente.php - Compatibilidade com código antigo
@@ -66,6 +74,19 @@ try {
     // GET /chamadofechadodia.php
     $api->addRoute('GET', 'chamadofechadodia.php', [$chamadoController, 'getChamadosFechadosDia']);
     
+
+    // titulos
+    $api->addRoute('GET', '/api/v1/titulos', function() use ($api) {
+        $api->sendResponse(200, [
+            'success' => true,
+            'status_code' => 200,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'data' => [
+                'message' => 'Endpoint de títulos não implementado'
+            ]
+        ]);
+    });
+
     // === ROTA DE INFORMAÇÕES DA API ===
     
     $api->addRoute('GET', '/api/v1/info', function() use ($api) {

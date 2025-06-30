@@ -71,9 +71,12 @@ class TituloController {
                 'data' => $result
             ]);
         } catch (Exception $e) {
-            $this->api->sendResponse(500, [
+            $this->api->sendResponse(200, [
                 'error' => 'Database Error',
-                'message' => 'Erro ao listar QR Codes PIX'
+                'message' => 'Erro ao listar QR Codes PIX',
+                'details' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
         }
     }
